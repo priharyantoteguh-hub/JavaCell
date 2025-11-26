@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paket IM3</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<h2 class="title-center">PAKET IM3</h2>
+
+<div id="product-list" class="product-grid"></div>
+
+<a href="paket-data.html" class="back">← KEMBALI</a>
+
+<script>
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRyoPcCRi5yc52IkHsFu5Cy0LWBCvcaMYv5qeJ6dGlGwRNucfZeCSN0jwSGaZfJUXUrT_ZeA6i1vHFC/pub?gid=0&single=true&output=csv";
+
+function csvToArray(text) {
+    const rows = text.split("\n").map(r => r.split(","));
+    const headers = rows[0].map(h => h.trim());
+    return rows.slice(1).map(row => {
+        let obj = {};
+        headers.forEach((h, i) => obj[h] = row[i] ? row[i].trim() : "");
+        return obj;
+    });
+}
+
+fetch(csvUrl)
+    .then(response => response.text())
+    .then(csv => {
+        const data = csvToArray(csv);
+        const container = document.getElementById("product-list");
+
+        data.forEach(item => {
+            const card = `
+            <div class="product-card">
+                <h4>${item.paket}</h4>
+                <p><b>Harga:</b> ${item.harga}</p>
+                <p><b>Kuota:</b> ${item.paket}</p>
+                <p><b>Masa aktif:</b> ${item.masa_berlaku}</p>
+                <a href="${item.order_link}" class="order-btn" target="_blank">ORDER</a>
+            </div>
+            `;
+            container.innerHTML += card;
+        });
+    });
+</script>
+
+</body>
+</html>
